@@ -16,17 +16,25 @@ namespace Client
         {
             try
             {
-                Int32 port = 13000;
-                IPAddress addr = IPAddress.Parse("26.129.184.182");
+                Console.WriteLine("Enter ip:port");
+                string[] n = Console.ReadLine().Split(":");
+                Int32 port = Convert.ToInt32(n[1]);
+                IPAddress addr = IPAddress.Parse(n[0]);
                 client = new TcpClient();
                 client.Connect(addr, port);     
 
                 HandleConnection();          
             }
-            catch(SocketException e)
+            catch(SocketException)
             {
-                Console.WriteLine("SocketException: {0}", e);
+                Console.WriteLine("Network err. Try again.");
             }
+            catch(Exception)
+            {
+                Console.WriteLine("Something went wrong.");
+            }
+
+            Console.ReadLine();
         }
 
 
@@ -62,31 +70,31 @@ namespace Client
             switch(text[0])
             {
                 case "name?":
-                    Console.WriteLine("Какое вы хотите себе имя?");
+                    Console.WriteLine("What's your name?");
                     string name = Console.ReadLine();
                     SendMessage($"name:{name}");
                     break;
                 case "choice?":
-                    Console.WriteLine("Какой ваш выбор? Варианты выбора предмета: paper, lizard, rock, scissors, spoke");
+                    Console.WriteLine("Chosen subject? Options to choose: paper, lizard, rock, scissors, spoke");
                     string choice = Console.ReadLine();
                     SendMessage($"choice:{choice}");
                     break;
                 case "waiting":
-                    Console.WriteLine("Ожидание новых игроков...");
+                    Console.WriteLine("Waiting for new players...");
                     break;
                 case "player":
-                    Console.WriteLine($"Подключился новый игрок под именем {text[1]}");
+                    Console.WriteLine($"A new player named {text[1]} has joined");
                     break;
                 case "choised":
-                    Console.WriteLine($"{text[1]} сделал выбор");
+                    Console.WriteLine($"{text[1]} make a choice");
                     break;
                 case "winner":
                     Console.WriteLine($"{text[1]} won, he chose {text[2]}");
                     break;
                 case "continue?":
-                    Console.WriteLine("Хотите продолжить?(yes/no)");
+                    Console.WriteLine("Want to continue??(yes/no)");
                     string answer = Console.ReadLine();
-                    Console.WriteLine($"continue{answer}");
+                    Console.WriteLine($"continue:{answer}");
                     break;
             }
         }

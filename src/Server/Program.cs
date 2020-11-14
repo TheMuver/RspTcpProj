@@ -39,16 +39,17 @@ namespace Server
 
         public void WaitNewConnections()
         {
-            (new Thread(new ThreadStart(Game))).Start(); // старт игрового обработчика
-
             TcpListener server = null;
             try
             {
-                Int32 port = 13000;
-                IPAddress addr = IPAddress.Parse("26.129.184.182");
+                Console.WriteLine("Enter ip:port");
+                string[] n = Console.ReadLine().Split(":");
+                Int32 port = Convert.ToInt32(n[1]);
+                IPAddress addr = IPAddress.Parse(n[0]);
                 server = new TcpListener(addr, port);
                 server.Start();
                 Console.WriteLine("Server is online");
+                (new Thread(new ThreadStart(Game))).Start(); // старт игрового обработчика
                 while (true)
                 {
                     TcpClient client = server.AcceptTcpClient();
@@ -63,6 +64,8 @@ namespace Server
             {
                 server.Stop();
             }
+
+            Console.ReadLine();
         }
 
         public void HandleConnection(Object c)
@@ -109,7 +112,8 @@ namespace Server
                     {
                         SendMessage(x, $"winner:{clients[playerses[winner]]}:{answers[winner]}");
                     }
-                    break;
+                    
+                    players = new Dictionary<TcpClient, rsp>(); //сброс предметов
                 }
 
                 Thread.Sleep(1000); // обработчик засыпает на секунду
